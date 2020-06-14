@@ -13,27 +13,20 @@ import {
     DialogContent, 
     DialogContentText, 
     TextField, 
-    Checkbox ,
-    FormControlLabel ,
     DialogActions} from '@material-ui/core';
 import './style.css';
 
 function App() {
     const [ lista, setLista ] = useState([]); // imutabilidade
     const [ open, setOpen ] = useState(false);
-    const [ nome, setNome ] = useState('');
-    const [ numero, setNumero ] = useState('');
-    const [ idContato, setIdContato ] = useState('');
-    const [ favorito, setFavorito ] = useState('S');
-    const [ checked, setChecked ] = useState(true);
+    const [ marca, setMarca ] = useState('');
+    const [ modelo, setModelo ] = useState('');
+    const [ anofabri, setAnofabri ] = useState('');
+    const [ id, setId ] = useState('');
     const [ botaoEditar, setBotaoEditar ] = useState(false);
     const [ botaoAdicionar, setBotaoAdicionar ] = useState(false);
     
-    const handleChange = (event) => {
-        setChecked(event.target.checked);
-        const check = checked ? "N" : "S";
-        setFavorito(check);
-    };
+  
     
     function openModal() {
         setBotaoAdicionar(true);
@@ -45,72 +38,60 @@ function App() {
         setOpen(false);
     };
 
-    function listaNumeros(){
-         api.get('/agenda').then((response) => {
+    function listaMotos(){
+         api.get('/motos').then((response) => {
             const itens = response.data;
             setLista(itens);
-              setNome('');
-                setNumero('');
-                setFavorito('S');
-                setIdContato('');
+              setMarca('');
+                setModelo('');
+                setAnofabri('');
+                setId('');
         });
     }
 
     useEffect(() => {
-        listaNumeros();
+        listaMotos();
     }, []);
     
-    function addContato(){
-        const name = nome;
-        const number = numero;
-        const favorite = favorito;
+    function addMoto(){
+        const marc = marca;
+        const model = modelo;
+        const year = anofabri;
 
-        api.post('/agenda', {nome:name, numero:number, favorito:favorite}).then((response) => {
-            setNome('');
-            setNumero('');
-            setChecked(true);
+        api.post('/motos', {marca:marc, modelo:model, anofabri:year}).then((response) => {
+            setMarca('');
+            setModelo('');
+            setAnofabri('');
             setOpen(false);
-            listaNumeros();
+            listaMotos();
         });
     }
 
-    function deleteContato(id){
-        api.delete(`/contato/${id}`).then((response) => {
-            listaNumeros();
+    function deleteMoto(id){
+        api.delete(`/motos/${id}`).then((response) => {
+            listaMotos();
         });
     }
-    function favoriteContato(id,fav){
-        if(fav == "S"){
-            fav = "N";
-        } else {
-            fav = "S";
-        }
-        api.put(`/contato/favorito/${id}`,{favorito:fav}).then((response) => {
-            listaNumeros();
-        });
-       
-    }
+  
 
-    function openEditar(id,nome,numero,favorito){
+    function openEditar(id,marca,modelo,anofabri){
         setBotaoAdicionar(false);
         setBotaoEditar(true);
         setOpen(true);
-        setNome(nome);
-        setNumero(numero);
-        setIdContato(id);
-        setChecked(favorito == "S" ? true : false);
-        setFavorito(favorito);
+        setMarca(marca);
+        setModelo(modelo);
+        setAnofabri(anofabri);
+        setId(id);
     }
 
-    function editarContato(){
-        api.put(`/contato/${idContato}`,{nome:nome,numero:numero,favorito:favorito}).then((response) => {
+    function editarmoto(){
+        api.put(`/motos/${id}`,{marca:marca,modelo:modelo,anofabri:anofabri}).then((response) => {
             setOpen(false);
-            setNome('');
-            setNumero('');
-            setFavorito('S');
-            setIdContato('');
-            setChecked(true);
-            listaNumeros();
+            setMarca('');
+            setModelo('');
+            setAnofabri('');
+            setId('');
+            listaMotos();
         });
     }
     return (
@@ -121,42 +102,34 @@ function App() {
                 
                 <TableHead>
                     <TableRow>
-                        <TableCell>Código</TableCell>
-                        <TableCell>Nome</TableCell>
-                        <TableCell>Número</TableCell>
-                        <TableCell>Favorito</TableCell>
+                        <TableCell>Marca</TableCell>
+                        <TableCell>Modelo</TableCell>
+                        <TableCell>Ano Fabricação</TableCell>
                         <TableCell>Ações</TableCell>
                     </TableRow>
                 </TableHead>
                 {lista.map(itens => (
                     <TableRow key={itens.id}>
                         <TableCell>{itens.id}</TableCell>
-                        <TableCell>{itens.nome}</TableCell>
-                        <TableCell>{itens.numero}</TableCell>
-                        <TableCell>{itens.favorito}</TableCell>
+                        <TableCell>{itens.marca}</TableCell>
+                        <TableCell>{itens.modelo}</TableCell>
+                        <TableCell>{itens.anofabri}</TableCell>
 
                         <TableCell>
-                            <Button 
-                                color="primary"
-                                variant="outlined" 
-                                onClick={() => favoriteContato(itens.id,itens.favorito)}
-                                size="small"> 
-                                {itens.favorito == "S" ? "Desfavoritar" : "Favoritar"} 
-                            </Button>
                             &nbsp;
                             <Button 
                                 color="primary"
                                 variant="outlined" 
-                                onClick={() => openEditar(itens.id,itens.nome,itens.numero,itens.favorito)}
+                                onClick={() => openEditar(itens.id,itens.marca,itens.modelo,itens.anofabri)}
                                 size="small"> 
                                 Editar 
                             </Button>
                             &nbsp;
                             <Button 
-                                onClick={() => deleteContato(itens.id)}
+                                onClick={() => deleteMoto(itens.id)}
                                 variant="outlined" 
                                 size="small" 
-                                color="secondary">Apagar</Button>
+                                color="secondary">Moto Vendida</Button>
                         </TableCell>
                     </TableRow>
                 ))}
@@ -170,51 +143,52 @@ function App() {
             </Button>
          </Container>
          <Dialog open={open} onClose={closeModal} fullWidth={true} maxWidth="sm">
-            <DialogTitle id="form-dialog-title">Contato</DialogTitle>
+            <DialogTitle id="form-dialog-title">Moto</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Digite os dados do contato.
+                    DIgite os dados da Moto
                 </DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"
-                    id="nome"
-                    label="Nome"
+                    id="marca"
+                    label="Marca Moto"
                     autoComplete="off"
                     type="text"
                     fullWidth
-                    value={nome}
-                    onChange={e => setNome(e.target.value)}
+                    value={marca}
+                    onChange={e => setMarca(e.target.value)}
                 />
                 <TextField
                     margin="dense"
-                    id="numero"
-                    label="Número"
+                    id="modelo"
+                    label="Modelo Moto"
                     autoComplete="off"
                     type="text"
                     fullWidth
-                    value={numero}
-                    onChange={e => setNumero(e.target.value)}
+                    value={modelo}
+                    onChange={e => setModelo(e.target.value)}
 
                 />
-                <FormControlLabel
-                    control={
-                    <Checkbox
-                        checked={checked}
-                        onChange={handleChange}
-                        color="primary"
-                        inputProps={{ 'aria-label': 'secondary checkbox' }}
-                    />
-                    }
-                    label="Favorito"
+                <TextField
+                    margin="dense"
+                    id="anofabri"
+                    label="Ano Fabricação"
+                    autoComplete="off"
+                    type="text"
+                    fullWidth
+                    value={anofabri}
+                    onChange={e => setAnofabri(e.target.value)}
+
                 />
+                
             </DialogContent>
             <DialogActions>
                 <Button onClick={closeModal} color="primary">
                     Cancelar
                 </Button>
-                <Button color="primary" onClick={botaoEditar ? editarContato : addContato }>
-                    Salvar
+                <Button color="primary" onClick={botaoEditar ? editarmoto : addMoto }>
+                    Salvar Moto
                 </Button>
             </DialogActions>
          </Dialog>

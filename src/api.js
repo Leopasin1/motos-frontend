@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'https://agendatelefonica.herokuapp.com/',
+    baseURL: 'https://listamotos1.herokuapp.com',
 });
 
 export default api;
