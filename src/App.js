@@ -94,7 +94,7 @@ function App() {
             listaMotos();
         });
     }
-    return (
+   return (
         <>
          <Header />
          <Container maxWidth="lg" className="container"> 
@@ -102,6 +102,7 @@ function App() {
                 
                 <TableHead>
                     <TableRow>
+                        <TableCell>ID</TableCell>
                         <TableCell>Marca</TableCell>
                         <TableCell>Modelo</TableCell>
                         <TableCell>Ano Fabricação</TableCell>
@@ -116,13 +117,14 @@ function App() {
                         <TableCell>{itens.anofabri}</TableCell>
 
                         <TableCell>
+                           
                             &nbsp;
                             <Button 
                                 color="primary"
                                 variant="outlined" 
                                 onClick={() => openEditar(itens.id,itens.marca,itens.modelo,itens.anofabri)}
                                 size="small"> 
-                                Editar 
+                                Editar Moto
                             </Button>
                             &nbsp;
                             <Button 
@@ -146,13 +148,13 @@ function App() {
             <DialogTitle id="form-dialog-title">Moto</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    DIgite os dados da Moto
+                    Digite os dados da Moto.
                 </DialogContentText>
                 <TextField
                     autoFocus
                     margin="dense"
                     id="marca"
-                    label="Marca Moto"
+                    label="Marca"
                     autoComplete="off"
                     type="text"
                     fullWidth
@@ -162,7 +164,7 @@ function App() {
                 <TextField
                     margin="dense"
                     id="modelo"
-                    label="Modelo Moto"
+                    label="Modelo"
                     autoComplete="off"
                     type="text"
                     fullWidth
@@ -181,7 +183,7 @@ function App() {
                     onChange={e => setAnofabri(e.target.value)}
 
                 />
-                
+               
             </DialogContent>
             <DialogActions>
                 <Button onClick={closeModal} color="primary">
