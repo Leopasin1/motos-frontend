@@ -83,6 +83,7 @@ function App() {
         setAnofabri(anofabri);
         setId(id);
     }
+    
 
     function editarmoto(){
         api.put(`/motos/${id}`,{marca:marca,modelo:modelo,anofabri:anofabri}).then((response) => {
